@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Password Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: #0f0f10;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .page-wrapper {
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .circuit-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(111, 66, 193, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1300px;
+            width: 92%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+        
+        .content-area {
+            flex: 1;
+            max-width: 560px;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .brand-logo {
+            height: 48px;
+        }
+        
+        .brand-separator {
+            width: 1px;
+            height: 30px;
+            background: linear-gradient(180deg, #00D4FF, #6F42C1);
+            margin: 0 1rem;
+        }
+        
+        .brand-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #00D4FF, #6F42C1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        h1 {
+            font-size: 3.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .highlight {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 4px;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.3), rgba(111, 66, 193, 0.3));
+            z-index: -1;
+            border-radius: 4px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin-right: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tech-badge:nth-child(odd) {
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+        
+        .tech-badge:nth-child(even) {
+            border-color: rgba(111, 66, 193, 0.2);
+        }
+        
+        .badge-container {
+            margin-bottom: 3rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.25rem;
+            margin-bottom: 3rem;
+        }
+        
+        .btn {
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .btn-primary {
+            background-color: #ffffff;
+            color: #0f0f10;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #00D4FF, #6F42C1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-primary:hover {
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .developer {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+        }
+        
+        .developer-icon {
+            margin-right: 0.5rem;
+            opacity: 0.5;
+        }
+        
+        .developer a {
+            color: #00D4FF;
+            text-decoration: none;
+            margin-left: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .developer a:hover {
+            color: #6F42C1;
+        }
+        
+        .image-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .app-mockup {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tech-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            animation: rotate 60s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .circle-1 {
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .circle-2 {
+            width: 280px;
+            height: 280px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-direction: reverse;
+            animation-duration: 45s;
+        }
+        
+        .glow-effect {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, rgba(111, 66, 193, 0.1) 50%, transparent 70%);
+            filter: blur(40px);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        
+        @media (max-width: 1100px) {
+            .container {
+                flex-direction: column;
+                padding: 5rem 0;
+            }
+            
+            .content-area {
+                order: 2;
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .image-area {
+                order: 1;
+                margin-bottom: 3rem;
+            }
+            
+            .brand, .cta-buttons {
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .image-area {
+                width: 100%;
+                max-width: 500px;
+            }
+            
+            .badge-container {
+                text-align: center;
+            }
+            
+            .developer {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tech-circle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="circuit-lines"></div>
+        
+        <section class="hero">
+            <div class="container">
+                <div class="content-area">
+                    <div class="brand">
+                        <img src="apm_logo.png" alt="AI Password Manager Logo" class="brand-logo">
+                        <div class="brand-separator"></div>
+                        <div class="brand-text" style="font-size: 1.3rem;">AI Password Manager</div>
+                    </div>
+                    
+                    <h1>Secure Your Digital Life with <span class="highlight">AI Technology</span></h1>
+                    
+                    <p class="description">
+                        Securely store and manage your passwords with the power of artificial intelligence. Protects your digital credentials with advanced encryption and smart features.
+                    </p>
+                    
+                    <div class="badge-container">
+                        <span class="tech-badge">AI-Powered</span>
+                        <span class="tech-badge">End-to-End Encryption</span>
+                        <span class="tech-badge">Multi-Platform</span>
+                    </div>
+                    
+                    <div class="cta-buttons">
+                        <a href="https://github.com/VidyutPrabakaran1/AI-Password-Manager/releases" class="btn btn-primary">
+                            <span class="btn-icon">⬇️</span> Download Now
+                        </a>
+                        <a href="https://github.com/VidyutPrabakaran1/AI-Password-Manager/tree/main" class="btn btn-secondary">
+                            <span class="btn-icon">ℹ️</span> Learn More
+                        </a>
+                    </div>
+                    
+                    <div class="developer">
+                        <span class="developer-icon">👨‍💻</span>
+                        Developed by Vidyut Prabakaran |<a href="mailto:vidyutprabakaran@gmail.com">vidyutprabakaran@gmail.com</a>
+                    </div>
+                </div>
+                
+                <div class="image-area">
+                    <div class="tech-circle circle-1"></div>
+                    <div class="tech-circle circle-2"></div>
+                    <div class="glow-effect"></div>
+                    <img src="apm.png" alt="AI Password Manager Screenshot" class="app-mockup">
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
